@@ -1,4 +1,6 @@
 <?php
+//Uso del fichero de configuración
+include_once ROOT.'config/DBConfig.php';
 
 /**
  * Operaciones sobre la base de datos.
