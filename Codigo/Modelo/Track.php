@@ -3,47 +3,51 @@ require_once(realpath(dirname(__FILE__)) . '/Usuario.php');
 require_once(realpath(dirname(__FILE__)) . '/Trackpoint.php');
 
 /**
- * @access public
- * @author admin
+ * Entrenamiento.
+ *
+ * @author David González Gutiérrez
  */
 class Track
 {
     /**
-     * @AttributeType int
+     * Identificación del entrenamiento
      */
     private $idTrack;
     /**
-     * @AttributeType bool
+     * Visibilidad del entrenamiento
      */
     private $visibilidad;
     /**
-     * @AttributeType string
+     * Descripción/nombre del entrenamiento
      */
     private $nombre;
     /**
-     * @AttributeType string
+     * Comentario sobre el entrenamiento
      */
     private $comentario;
 
+    /**
+     * Lista de Trackpoints
+     */
     private $listaTrackpoint;
     /**
-     * @AttributeType string
+     * Fecha de importación del entrenamiento
      */
     private $fechaImportacion;
     /**
-     * @AttributeType string
+     * Fecha del entrenamiento
      */
     private $fechaInicio;
 
     /**
      * Track constructor.
-     * @param $idTrack
-     * @param $visibilidad
-     * @param $nombre
-     * @param $comentario
-     * @param $listaTrackpoint
-     * @param $fechaImportacion
-     * @param $fechaInicio
+     * @param string $idTrack Identificación del entrenamiento
+     * @param bool $visibilidad Visibilidad del entrenamiento
+     * @param string $nombre Descripción/nombre del entrenamiento
+     * @param string $comentario Comentario sobre el entrenamiento
+     * @param Trackpoint $listaTrackpoint Lista de Trackpoints
+     * @param string $fechaImportacion Fecha de importación del entrenamiento
+     * @param string $fechaInicio Fecha del entrenamiento
      */
     public function __construct($idTrack, $visibilidad, $nombre, $comentario, $listaTrackpoint, $fechaImportacion, $fechaInicio)
     {
@@ -58,30 +62,31 @@ class Track
 
 
     /**
-     * @access public
+     * @author David González Gutiérrez
      * @return bool
      */
     public function insertarTrack()
     {
-       $insertCorrecto=true;
+        $insertCorrecto = true;
         // Not yet implemented
-       return $insertCorrecto;
+        return $insertCorrecto;
     }
 
     /**
-     * @access public
-     * @param idTrack int
+     * @author David González Gutiérrez
+     * @param  int $idTrack
      * @return bool
      *
      */
     public function borrarTrack($idTrack)
     {
-        $borradoCorrecto=true;
+        $borradoCorrecto = true;
         // Not yet implemented
         return $borradoCorrecto;
     }
 
     /**
+     * @author David González Gutiérrez
      * @access public
      */
     public static function buscarTracks()
@@ -90,32 +95,95 @@ class Track
     }
 
     /**
-     * @access public
+     * @author David González Gutiérrez
      * @return bool
      */
     public static function validarTrack()
     {
-        $trackValido=true;
+        $trackValido = true;
         // Not yet implemented
         return $trackValido;
     }
 
-    /**
-     * @access public
+    /*
+     * @author David González Gutiérrez
      * @return Trackpoint
      */
-    public function insertarTrackpoint()
+    private function insertarTrackpoint()
     {
         // Not yet implemented
     }
 
-    public function __get($property){
-        if(property_exists($this, $property)) {
+    /**
+     * @access public
+     * @return float
+     */
+    public function getDistancia()
+    {
+        // Not yet implemented
+    }
+
+    /**
+     * @access public
+     * @return float
+     */
+    public function getAltitudMax()
+    {
+        // Not yet implemented
+    }
+
+    /**
+     * @access public
+     * @return float
+     */
+    public function getAltitudMin()
+    {
+        // Not yet implemented
+    }
+
+    /**
+     * @access public
+     * @return int
+     */
+    public function getPulsacionesMax()
+    {
+        // Not yet implemented
+    }
+
+    /**
+     * @access public
+     * @return int
+     */
+    public function getPulsacionesMin()
+    {
+        // Not yet implemented
+    }
+
+    /**
+     * @access public
+     */
+    public function resumirTrack()
+    {
+        // Not yet implemented
+    }
+
+    /**
+     * @access public
+     */
+    public function dibujarTrack()
+    {
+        // Not yet implemented
+    }
+
+    public function __get($property)
+    {
+        if (property_exists($this, $property)) {
             return $this->$property;
         }
     }
 
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
