@@ -79,148 +79,16 @@ class Trackpoint {
 		// Not yet implemented
 	}
 
-    /**
-     * @return mixed
-     */
-    public function getIdTrackpoint()
-    {
-        return $this->idTrackpoint;
+    public function __get($property){
+        if(property_exists($this, $property)) {
+            return $this->$property;
+        }
     }
 
-    /**
-     * @param mixed $idTrackpoint
-     */
-    public function setIdTrackpoint($idTrackpoint)
-    {
-        $this->idTrackpoint = $idTrackpoint;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLatitud()
-    {
-        return $this->latitud;
-    }
-
-    /**
-     * @param mixed $latitud
-     */
-    public function setLatitud($latitud)
-    {
-        $this->latitud = $latitud;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getLongitud()
-    {
-        return $this->longitud;
-    }
-
-    /**
-     * @param mixed $longitud
-     */
-    public function setLongitud($longitud)
-    {
-        $this->longitud = $longitud;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTiempo()
-    {
-        return $this->tiempo;
-    }
-
-    /**
-     * @param mixed $tiempo
-     */
-    public function setTiempo($tiempo)
-    {
-        $this->tiempo = $tiempo;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHeartRateBPM()
-    {
-        return $this->heartRateBPM;
-    }
-
-    /**
-     * @param mixed $heartRateBPM
-     */
-    public function setHeartRateBPM($heartRateBPM)
-    {
-        $this->heartRateBPM = $heartRateBPM;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getElevacion()
-    {
-        return $this->elevacion;
-    }
-
-    /**
-     * @param mixed $elevacion
-     */
-    public function setElevacion($elevacion)
-    {
-        $this->elevacion = $elevacion;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNumSatelites()
-    {
-        return $this->numSatelites;
-    }
-
-    /**
-     * @param mixed $numSatelites
-     */
-    public function setNumSatelites($numSatelites)
-    {
-        $this->numSatelites = $numSatelites;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getVelocidad()
-    {
-        return $this->velocidad;
-    }
-
-    /**
-     * @param mixed $velocidad
-     */
-    public function setVelocidad($velocidad)
-    {
-        $this->velocidad = $velocidad;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCalorias()
-    {
-        return $this->calorias;
-    }
-
-    /**
-     * @param mixed $calorias
-     */
-    public function setCalorias($calorias)
-    {
-        $this->calorias = $calorias;
+    public function __set($property, $value) {
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
     }
 
 

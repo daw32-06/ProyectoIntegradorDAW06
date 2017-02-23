@@ -134,18 +134,23 @@ class Usuario {
 
 
     /**
-	 * @access public
-	 * @param string codUsuario
-	 * @param string password
-	 * @return Usuario
-	 * @static
-	 * @ParamType codUsuario string
-	 * @ParamType password string
-	 * @ReturnType Usuario
-	 */
-	public static function validarUsuario($codUsuario, $password) {
-		// Not yet implemented
-	}
+     * Valida un usuario en la aplicación.
+     *
+     * @author Pablo Mora Martín
+     *
+     * @param string $codUsuario Código de usuario
+     * @param string $hashPassword Contraseña (hash) del usuario
+     * @return string null|Usuario Null / Usuario identificado
+     */
+    public static function validarUsuario($codUsuario, $hashPassword)
+    {
+        $objUser = null;
+        $userArray = UsuarioPDO::validarUsuario($codUsuario, $hashPassword); //Array con la información del usuario
+        if ($userArray) {//Si el array contiene algo, se crea el objeto
+            $objUser = new Usuario($codUsuario, $userArray['descUsuario'], $hashPassword, $userArray['perfil'], $userArray['ultimaConexion'], $userArray['contadorAccesos']);
+        }
+        return $objUser;
+    }
 
 	/**
 	 * @access public
@@ -221,326 +226,17 @@ class Usuario {
 		// Not yet implemented
 	}
 
-    /**
-     * @return mixed
-     */
-    public function getCodUsuario()
-    {
-        return $this->codUsuario;
+    public function __get($property){
+        if(property_exists($this, $property)) {
+            return $this->$property;
+        }
     }
 
-    /**
-     * @param mixed $codUsuario
-     */
-    public function setCodUsuario($codUsuario)
-    {
-        $this->codUsuario = $codUsuario;
+    public function __set($property, $value) {
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
     }
-
-    /**
-     * @return mixed
-     */
-    public function getNombre()
-    {
-        return $this->nombre;
-    }
-
-    /**
-     * @param mixed $nombre
-     */
-    public function setNombre($nombre)
-    {
-        $this->nombre = $nombre;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getApellidos()
-    {
-        return $this->apellidos;
-    }
-
-    /**
-     * @param mixed $apellidos
-     */
-    public function setApellidos($apellidos)
-    {
-        $this->apellidos = $apellidos;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param mixed $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param mixed $password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEstatura()
-    {
-        return $this->estatura;
-    }
-
-    /**
-     * @param mixed $estatura
-     */
-    public function setEstatura($estatura)
-    {
-        $this->estatura = $estatura;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPeso()
-    {
-        return $this->peso;
-    }
-
-    /**
-     * @param mixed $peso
-     */
-    public function setPeso($peso)
-    {
-        $this->peso = $peso;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFechaNac()
-    {
-        return $this->fechaNac;
-    }
-
-    /**
-     * @param mixed $fechaNac
-     */
-    public function setFechaNac($fechaNac)
-    {
-        $this->fechaNac = $fechaNac;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTipoCorredor()
-    {
-        return $this->tipoCorredor;
-    }
-
-    /**
-     * @param mixed $tipoCorredor
-     */
-    public function setTipoCorredor($tipoCorredor)
-    {
-        $this->tipoCorredor = $tipoCorredor;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMedioFondo5km()
-    {
-        return $this->medioFondo5km;
-    }
-
-    /**
-     * @param mixed $medioFondo5km
-     */
-    public function setMedioFondo5km($medioFondo5km)
-    {
-        $this->medioFondo5km = $medioFondo5km;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMedioFondo10km()
-    {
-        return $this->medioFondo10km;
-    }
-
-    /**
-     * @param mixed $medioFondo10km
-     */
-    public function setMedioFondo10km($medioFondo10km)
-    {
-        $this->medioFondo10km = $medioFondo10km;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMedioFondoMediaMaraton()
-    {
-        return $this->medioFondoMediaMaraton;
-    }
-
-    /**
-     * @param mixed $medioFondoMediaMaraton
-     */
-    public function setMedioFondoMediaMaraton($medioFondoMediaMaraton)
-    {
-        $this->medioFondoMediaMaraton = $medioFondoMediaMaraton;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFondoMediaMaraton()
-    {
-        return $this->fondoMediaMaraton;
-    }
-
-    /**
-     * @param mixed $fondoMediaMaraton
-     */
-    public function setFondoMediaMaraton($fondoMediaMaraton)
-    {
-        $this->fondoMediaMaraton = $fondoMediaMaraton;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFondoMaraton()
-    {
-        return $this->fondoMaraton;
-    }
-
-    /**
-     * @param mixed $fondoMaraton
-     */
-    public function setFondoMaraton($fondoMaraton)
-    {
-        $this->fondoMaraton = $fondoMaraton;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTrailCarreraMaxKm()
-    {
-        return $this->trailCarreraMaxKm;
-    }
-
-    /**
-     * @param mixed $trailCarreraMaxKm
-     */
-    public function setTrailCarreraMaxKm($trailCarreraMaxKm)
-    {
-        $this->trailCarreraMaxKm = $trailCarreraMaxKm;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTrailDistancia()
-    {
-        return $this->trailDistancia;
-    }
-
-    /**
-     * @param mixed $trailDistancia
-     */
-    public function setTrailDistancia($trailDistancia)
-    {
-        $this->trailDistancia = $trailDistancia;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTrailDesnivel()
-    {
-        return $this->trailDesnivel;
-    }
-
-    /**
-     * @param mixed $trailDesnivel
-     */
-    public function setTrailDesnivel($trailDesnivel)
-    {
-        $this->trailDesnivel = $trailDesnivel;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTrailTiempo()
-    {
-        return $this->trailTiempo;
-    }
-
-    /**
-     * @param mixed $trailTiempo
-     */
-    public function setTrailTiempo($trailTiempo)
-    {
-        $this->trailTiempo = $trailTiempo;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSexo()
-    {
-        return $this->sexo;
-    }
-
-    /**
-     * @param mixed $sexo
-     */
-    public function setSexo($sexo)
-    {
-        $this->sexo = $sexo;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getListaTracks()
-    {
-        return $this->listaTracks;
-    }
-
-    /**
-     * @param mixed $listaTracks
-     */
-    public function setListaTracks($listaTracks)
-    {
-        $this->listaTracks = $listaTracks;
-    }
-
 
 }
 ?>
