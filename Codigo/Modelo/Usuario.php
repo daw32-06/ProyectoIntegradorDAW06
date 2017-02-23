@@ -2,88 +2,91 @@
 require_once(realpath(dirname(__FILE__)) . '/Track.php');
 
 /**
- * @access public
- * @author admin
+ * Usuario que se va a identificar en la aplicación.
+ *
+ * @author Pablo Mora Martín
+ * Fecha de última modificación: 23/02/2017
  */
-class Usuario {
-	/**
-	 * @AttributeType string
-	 */
-	private $codUsuario;
-	/**
-	 * @AttributeType string
-	 */
-	private $nombre;
-	/**
-	 * @AttributeType string
-	 */
-	private $apellidos;
-	/**
-	 * @AttributeType string
-	 */
-	private $email;
-	/**
-	 * @AttributeType string
-	 */
-	private $password;
-	/**
-	 * @AttributeType int
-	 */
-	private $estatura;
-	/**
-	 * @AttributeType int
-	 */
-	private $peso;
-	/**
-	 * @AttributeType string
-	 */
-	private $fechaNac;
-	/**
-	 * @AttributeType string
-	 */
-	private $tipoCorredor;
-	/**
-	 * @AttributeType int
-	 */
-	private $medioFondo5km;
-	/**
-	 * @AttributeType int
-	 */
-	private $medioFondo10km;
-	/**
-	 * @AttributeType int
-	 */
-	private $medioFondoMediaMaraton;
-	/**
-	 * @AttributeType int
-	 */
-	private $fondoMediaMaraton;
-	/**
-	 * @AttributeType int
-	 */
-	private $fondoMaraton;
-	/**
-	 * @AttributeType string
-	 */
-	private $trailCarreraMaxKm;
-	/**
-	 * @AttributeType int
-	 */
-	private $trailDistancia;
-	/**
-	 * @AttributeType int
-	 */
-	private $trailDesnivel;
-	/**
-	 * @AttributeType int
-	 */
-	private $trailTiempo;
-	/**
-	 * @AttributeType string
-	 */
-	private $sexo;
+class Usuario
+{
+    /**
+     * @AttributeType string
+     */
+    private $codUsuario;
+    /**
+     * @AttributeType string
+     */
+    private $nombre;
+    /**
+     * @AttributeType string
+     */
+    private $apellidos;
+    /**
+     * @AttributeType string
+     */
+    private $email;
+    /**
+     * @AttributeType string
+     */
+    private $password;
+    /**
+     * @AttributeType int
+     */
+    private $estatura;
+    /**
+     * @AttributeType int
+     */
+    private $peso;
+    /**
+     * @AttributeType string
+     */
+    private $fechaNac;
+    /**
+     * @AttributeType string
+     */
+    private $tipoCorredor;
+    /**
+     * @AttributeType int
+     */
+    private $medioFondo5km;
+    /**
+     * @AttributeType int
+     */
+    private $medioFondo10km;
+    /**
+     * @AttributeType int
+     */
+    private $medioFondoMediaMaraton;
+    /**
+     * @AttributeType int
+     */
+    private $fondoMediaMaraton;
+    /**
+     * @AttributeType int
+     */
+    private $fondoMaraton;
+    /**
+     * @AttributeType string
+     */
+    private $trailCarreraMaxKm;
+    /**
+     * @AttributeType int
+     */
+    private $trailDistancia;
+    /**
+     * @AttributeType int
+     */
+    private $trailDesnivel;
+    /**
+     * @AttributeType int
+     */
+    private $trailTiempo;
+    /**
+     * @AttributeType string
+     */
+    private $sexo;
 
-	private $listaTracks;
+    private $listaTracks;
 
     /**
      * Usuario constructor.
@@ -139,104 +142,89 @@ class Usuario {
      * @author Pablo Mora Martín
      *
      * @param string $codUsuario Código de usuario
-     * @param string $hashPassword Contraseña (hash) del usuario
-     * @return string null|Usuario Null / Usuario identificado
+     * @param string $password Contraseña (hash) del usuario
+     * @return null|Usuario Null / Usuario identificado
      */
-    public static function validarUsuario($codUsuario, $hashPassword)
+    public static function validarUsuario($codUsuario, $password)
     {
         $objUser = null;
-        $userArray = UsuarioPDO::validarUsuario($codUsuario, $hashPassword); //Array con la información del usuario
+        $userArray = UsuarioPDO::validarUsuario($codUsuario, $password); //Array con la información del usuario
         if ($userArray) {//Si el array contiene algo, se crea el objeto
-            $objUser = new Usuario($codUsuario, $userArray['descUsuario'], $hashPassword, $userArray['perfil'], $userArray['ultimaConexion'], $userArray['contadorAccesos']);
+            $objUser = new Usuario($codUsuario, $userArray['nombre'], $userArray['apellidos'], $userArray['email'], $userArray['nombre'], $password, $userArray['estatura'], $userArray['peso'], $userArray['fechaNac'], $userArray['tipoCorredor'],
+                $userArray['medioFondo5km'], $userArray['medioFondo10km'], $userArray['medioFondoMediaMaraton'], $userArray['fondoMaraton'], $userArray['traukCarreraMaxKm'],
+                $userArray['trailDistancia'], $userArray['trailDesnivel'], $userArray['trailTiempo'], $userArray['sexo'],null);
+            $objUser::__get($objUser->listaTracks)=Track::buscarTracks();
         }
         return $objUser;
     }
 
-	/**
-	 * @access public
-	 * @param atributos
-	 * @return bool
-	 * @static
-	 * 
-	 * @ReturnType bool
-	 */
-	public static function insertarUsuario($atributos) {
-		// Not yet implemented
-	}
 
-	/**
-	 * @access public
-	 * @param string codUsuario
-	 * @param string password
-	 * @return bool
-	 * @static
-	 * @ParamType codUsuario string
-	 * @ParamType password string
-	 * @ReturnType bool
-	 */
-	public static function borrarUsuario($codUsuario, $password) {
-		// Not yet implemented
-	}
+    public static function insertarUsuario($parametros)
+    {
+        return UsuarioPDO::insertarUsuario($parametros);
+    }
 
-	/**
-	 * @access public
-	 * @param atributos
-	 * @return bool
-	 * @static
-	 * 
-	 * @ReturnType bool
-	 */
-	public static function modificarInformacion($atributos) {
-		// Not yet implemented
-	}
 
-	/**
-	 * @access public
-	 */
-	public function cargarTracksPorFecha() {
-		// Not yet implemented
-	}
+    public static function borrarUsuario($codUsuario, $password)
+    {
+        return UsuarioPDO::borrarUsuario($codUsuario, $password);
+    }
 
-	/**
-	 * @access public
-	 */
-	public function cargarTracksPordescripcion() {
-		// Not yet implemented
-	}
 
-	/**
-	 * @access public
-	 * @param atributos
-	 * @return bool
-	 * 
-	 * @ReturnType bool
-	 */
-	public function importarTrack($atributos) {
-		// Not yet implemented
-	}
+    public static function modificarInformacion($codUsuario, $parametros)
+    {
+        return UsuarioPDO::modificarInformacion($codUsuario, $parametros);
+    }
 
-	/**
-	 * @access public
-	 * @param int idTrack
-	 * @return bool
-	 * @ParamType idTrack int
-	 * @ReturnType bool
-	 */
-	public function borrarTrack($idTrack) {
-		// Not yet implemented
-	}
 
-    public function __get($property){
-        if(property_exists($this, $property)) {
+    public function cargarTracksPorFecha($codUsuario, $idTrack, $fechaInicio)
+    {
+        $matrizTracks = UsuarioPDO::listarTracksPorFecha($codUsuario, $idTrack, $fechaInicio);
+        $arrayTracksFecha = [];
+        foreach ($matrizTracks as $track) {
+            $trackNuevo = new Track($track['idTrack'], $track['visibilidad'], $track['nombre'], $track['comentario'], $track['listaTrackpoint'], $track['fechaImportacion'], $track['fechaInicio']);
+            array_push($arrayTracksFecha, $trackNuevo);
+        }
+        return $arrayTracksFecha;
+    }
+
+
+    public function cargarTracksPordescripcion($codUsuario, $idTrack, $nombre)
+    {
+        $matrizTracks = UsuarioPDO::listarTracksPorDescripcion($codUsuario, $idTrack, $nombre);
+        $arrayTracksDescripcion = [];
+        foreach ($matrizTracks as $track) {
+            $trackNuevo = new Track($track['idTrack'], $track['visibilidad'], $track['nombre'], $track['comentario'], $track['listaTrackpoint'], $track['fechaImportacion'], $track['fechaInicio']);
+            array_push($arrayTracksDescripcion, $trackNuevo);
+        }
+        return $arrayTracksDescripcion;
+    }
+
+
+    public function importarTrack($atributos)
+    {
+        // Not yet implemented
+    }
+
+    public function borrarTrack($idTrack)
+    {
+        // Not yet implemented
+    }
+
+    public function __get($property)
+    {
+        if (property_exists($this, $property)) {
             return $this->$property;
         }
     }
 
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
     }
 
 }
+
 ?>
