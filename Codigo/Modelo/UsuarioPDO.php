@@ -1,5 +1,5 @@
 <?php
-
+require_once 'DBPDO.php';
 /**
  * Controla todas las operaciones SQL sobre el usuario que se va a identificar en la aplicación.
  * @author Pablo Mora Martín
@@ -25,10 +25,24 @@ class UsuarioPDO
         $resultSet = DBPDO::ejecutarConsulta($consultaUsuario, [$codUsuario, $hashPassword]);
         if ($resultSet->rowCount()) {
             $usuario = $resultSet->fetchObject();
-            $arrayUser['descUsuario'] = $usuario->descUsuario;
-            $arrayUser['perfil'] = $usuario->perfil;
-            $arrayUser['ultimaConexion'] = $usuario->ultimaConexion;
-            $arrayUser['contadorAccesos'] = $usuario->contadorAccesos;
+            $arrayUser['apellidos']=$usuario->apellidos;
+            $arrayUser['email']=$usuario->email;
+            $arrayUser['nombre']=$usuario->nombre;
+            $arrayUser['estatura']=$usuario->estatura;
+            $arrayUser['fechaNac']=$usuario->fechaNac;
+            $arrayUser['fondoMaraton']=$usuario->fondoMaraton;
+            $arrayUser['fondoMediaMaraton']=$usuario->fondoMaraton;
+            $arrayUser['medioFondo5km']=$usuario->medioFondo5km;
+            $arrayUser['medioFondo10km']=$usuario->medioFondo10km;
+            $arrayUser['medioFondoMediaMaraton']=$usuario->medioFondoMediaMaraton;
+            $arrayUser['nombre']=$usuario->nombre;
+            $arrayUser['peso']=$usuario->peso;
+            $arrayUser['sexo']=$usuario->sexo;
+            $arrayUser['tipoCorredor']=$usuario->tipoCorredor;
+            $arrayUser['trailDistancia']=$usuario->trailDistancia;
+            $arrayUser['trailDesnivel']=$usuario->trailDesnivel;
+            $arrayUser['trailCarreraMaxKm']=$usuario->trailNombre;
+
         }
         return $arrayUser;
     }
@@ -84,7 +98,7 @@ class UsuarioPDO
     public static function modificarInformacion($codUsuario, $parametros)
     {
         $modificacionCorrecta = true;
-        $sentenciaSQL = "update usuario set  where codUsuario=$codUsuario";
+        $sentenciaSQL = "update usuario set nombre=?,apellidos=?,email=?,estatura=?,peso=?,fechaNac=?,tipoCorredor=?,medioFondo5km=?,medioFondo10km=?,medioFondoMediaMaraton=?,fondoMediaMaraton=?,fondoMaraton=?,trailCarreraMaxKm=?,trailDistancia=?,trailDesnivel=?,trailTiempo=?,sexo=? where codUsuario=$codUsuario";
         $resultSet = DBPDO::ejecutarConsulta($sentenciaSQL, [$parametros]);
         if ($resultSet->rowCount() != 1) {
             $modificacionCorrecta = false;

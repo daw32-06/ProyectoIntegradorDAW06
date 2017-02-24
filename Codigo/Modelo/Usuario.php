@@ -1,6 +1,7 @@
 <?php
-require_once(realpath(dirname(__FILE__)) . '/Track.php');
-
+require_once('Track.php');
+require_once('UsuarioPDO.php');
+//require_once('controller/TracksController.php');
 /**
  * Usuario que se va a identificar en la aplicación.
  *
@@ -107,11 +108,10 @@ class Usuario
      * @param $trailCarreraMaxKm
      * @param $trailDistancia
      * @param $trailDesnivel
-     * @param $trailTiempo
      * @param $sexo
      * @param $listaTracks
      */
-    public function __construct($codUsuario, $nombre, $apellidos, $email, $password, $estatura, $peso, $fechaNac, $tipoCorredor, $medioFondo5km, $medioFondo10km, $medioFondoMediaMaraton, $fondoMediaMaraton, $fondoMaraton, $trailCarreraMaxKm, $trailDistancia, $trailDesnivel, $trailTiempo, $sexo, $listaTracks)
+    public function __construct($codUsuario, $nombre, $apellidos, $email, $password, $estatura, $peso, $fechaNac, $tipoCorredor, $medioFondo5km, $medioFondo10km, $medioFondoMediaMaraton, $fondoMediaMaraton, $fondoMaraton, $trailCarreraMaxKm, $trailDistancia, $trailDesnivel, $sexo, $listaTracks)
     {
         $this->codUsuario = $codUsuario;
         $this->nombre = $nombre;
@@ -130,7 +130,6 @@ class Usuario
         $this->trailCarreraMaxKm = $trailCarreraMaxKm;
         $this->trailDistancia = $trailDistancia;
         $this->trailDesnivel = $trailDesnivel;
-        $this->trailTiempo = $trailTiempo;
         $this->sexo = $sexo;
         $this->listaTracks = $listaTracks;
     }
@@ -150,9 +149,9 @@ class Usuario
         $objUser = null;
         $userArray = UsuarioPDO::validarUsuario($codUsuario, $password); //Array con la información del usuario
         if ($userArray) {//Si el array contiene algo, se crea el objeto
-            $objUser = new Usuario($codUsuario, $userArray['nombre'], $userArray['apellidos'], $userArray['email'], $userArray['nombre'], $password, $userArray['estatura'], $userArray['peso'], $userArray['fechaNac'], $userArray['tipoCorredor'],
-                $userArray['medioFondo5km'], $userArray['medioFondo10km'], $userArray['medioFondoMediaMaraton'], $userArray['fondoMaraton'], $userArray['traukCarreraMaxKm'],
-                $userArray['trailDistancia'], $userArray['trailDesnivel'], $userArray['trailTiempo'], $userArray['sexo'], null);
+            $objUser = new Usuario($codUsuario, $userArray['nombre'],$userArray['apellidos'], $userArray['email'], $password, $userArray['estatura'], $userArray['peso'], $userArray['fechaNac'], $userArray['tipoCorredor'],
+                $userArray['medioFondo5km'], $userArray['medioFondo10km'], $userArray['medioFondoMediaMaraton'], $userArray['fondoMaraton'], $userArray['fondoMediaMaraton'],$userArray['trailCarreraMaxKm'],
+                $userArray['trailDistancia'], $userArray['trailDesnivel'], $userArray['sexo'], null);
         }
         return $objUser;
     }
@@ -175,15 +174,16 @@ class Usuario
         return UsuarioPDO::modificarInformacion($codUsuario, $parametros);
     }
 
-     public function cargarTracks($parametros)
+    public function cargarTracks($parametros)
     {
-        $this::__get($this->listaTracks) = Track::buscarTracks($parametros);
+//        $this::__get($this->listaTracks) = Track::buscarTracks($parametros);
     }
 
     public function importarTrack($fichero)
     {
         return TracksController::procesarTrack($fichero);
     }
+
     public function borrarTrack($idTrack)
     {
         return Track::borrarTrack($idTrack);
