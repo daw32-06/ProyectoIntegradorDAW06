@@ -152,8 +152,7 @@ class Usuario
         if ($userArray) {//Si el array contiene algo, se crea el objeto
             $objUser = new Usuario($codUsuario, $userArray['nombre'], $userArray['apellidos'], $userArray['email'], $userArray['nombre'], $password, $userArray['estatura'], $userArray['peso'], $userArray['fechaNac'], $userArray['tipoCorredor'],
                 $userArray['medioFondo5km'], $userArray['medioFondo10km'], $userArray['medioFondoMediaMaraton'], $userArray['fondoMaraton'], $userArray['traukCarreraMaxKm'],
-                $userArray['trailDistancia'], $userArray['trailDesnivel'], $userArray['trailTiempo'], $userArray['sexo'],null);
-            $objUser::__get($objUser->listaTracks)=Track::buscarTracks();
+                $userArray['trailDistancia'], $userArray['trailDesnivel'], $userArray['trailTiempo'], $userArray['sexo'], null);
         }
         return $objUser;
     }
@@ -176,39 +175,19 @@ class Usuario
         return UsuarioPDO::modificarInformacion($codUsuario, $parametros);
     }
 
-
-    public function cargarTracksPorFecha($codUsuario, $idTrack, $fechaInicio)
+    public function cargarTracks($parametros)
     {
-        $matrizTracks = UsuarioPDO::listarTracksPorFecha($codUsuario, $idTrack, $fechaInicio);
-        $arrayTracksFecha = [];
-        foreach ($matrizTracks as $track) {
-            $trackNuevo = new Track($track['idTrack'], $track['visibilidad'], $track['nombre'], $track['comentario'], $track['listaTrackpoint'], $track['fechaImportacion'], $track['fechaInicio']);
-            array_push($arrayTracksFecha, $trackNuevo);
-        }
-        return $arrayTracksFecha;
+        $this::__get($this->listaTracks) = Track::buscarTracks($parametros);
     }
 
-
-    public function cargarTracksPordescripcion($codUsuario, $idTrack, $nombre)
+    public function importarTrack($fichero)
     {
-        $matrizTracks = UsuarioPDO::listarTracksPorDescripcion($codUsuario, $idTrack, $nombre);
-        $arrayTracksDescripcion = [];
-        foreach ($matrizTracks as $track) {
-            $trackNuevo = new Track($track['idTrack'], $track['visibilidad'], $track['nombre'], $track['comentario'], $track['listaTrackpoint'], $track['fechaImportacion'], $track['fechaInicio']);
-            array_push($arrayTracksDescripcion, $trackNuevo);
-        }
-        return $arrayTracksDescripcion;
-    }
-
-
-    public function importarTrack($atributos)
-    {
-        // Not yet implemented
+        return Track::validarTrack($fichero);
     }
 
     public function borrarTrack($idTrack)
     {
-        // Not yet implemented
+        return Track::borrarTrack($idTrack);
     }
 
     public function __get($property)

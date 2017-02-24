@@ -92,47 +92,6 @@ class UsuarioPDO
         return $modificacionCorrecta;
     }
 
-    /**
-     * Devuelve los entrenamientos de una fecha concreta
-     *
-     * @author Pablo Mora Martín
-     *
-     * @param int $codUsuario Identificación del usuario
-     * @param int $idTrack Identificación del entrenamiento
-     * @param string $fechaInicio Fecha del entrenamiento
-     * @return array Array con los tracks
-     */
-    public static function listarTracksPorFecha($codUsuario, $idTrack, $fechaInicio)
-    {
-        $matrizTracks = [];
-        $consultaDepartamentos = "select track.* from track inner join usuario on track.codUsuario=usuario.codUsuario where track.codUsuario=? and idTrack=? and fechaInicio=?";
-        $resultSet = DBPDO::ejecutarConsulta($consultaDepartamentos, [$codUsuario,$idTrack, "%$fechaInicio%"]);
-        if ($resultSet->rowCount()) {
-            $matrizTracks = $resultSet->fetchAll();
-        }
-        return $matrizTracks;
-    }
-
-    /**
-     * Devuelve los entrenamientos con un nombre/descripción concreta
-     *
-     * @author Pablo Mora Martín
-     *
-     * @param int $codUsuario Identificación del usuario
-     * @param int $idTrack Identificación del entrenamiento
-     * @param string $nombre Nombre/descripción del entrenamiento
-     * @return array Array con los tracks
-     */
-    public static function listarTracksPorDescripcion($codUsuario, $idTrack, $nombre)
-    {
-        $matrizTracks = [];
-        $consultaDepartamentos = "select track.* from track inner join usuario on track.codUsuario=usuario.codUsuario where track.codUsuario=? and idTrack=? and track.nombre LIKE ?";
-        $resultSet = DBPDO::ejecutarConsulta($consultaDepartamentos, [$codUsuario, $idTrack, "%$nombre%"]);
-        if ($resultSet->rowCount()) {
-            $matrizTracks = $resultSet->fetchAll();
-        }
-        return $matrizTracks;
-    }
 }
 
 ?>
