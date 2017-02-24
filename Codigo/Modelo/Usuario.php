@@ -175,16 +175,15 @@ class Usuario
         return UsuarioPDO::modificarInformacion($codUsuario, $parametros);
     }
 
-    public function cargarTracks($parametros)
+     public function cargarTracks($parametros)
     {
         $this::__get($this->listaTracks) = Track::buscarTracks($parametros);
     }
 
     public function importarTrack($fichero)
     {
-        return Track::validarTrack($fichero);
+        return TracksController::procesarTrack($fichero);
     }
-
     public function borrarTrack($idTrack)
     {
         return Track::borrarTrack($idTrack);
