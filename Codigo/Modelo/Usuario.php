@@ -1,6 +1,6 @@
 <?php
-require_once('Track.php');
-require_once('UsuarioPDO.php');
+//require_once ROOT.'Track.php';
+require_once 'UsuarioPDO.php';
 //require_once('controller/TracksController.php');
 /**
  * Usuario que se va a identificar en la aplicación.
@@ -149,17 +149,38 @@ class Usuario
         $objUser = null;
         $userArray = UsuarioPDO::validarUsuario($codUsuario, $password); //Array con la información del usuario
         if ($userArray) {//Si el array contiene algo, se crea el objeto
-            $objUser = new Usuario($codUsuario, $userArray['nombre'],$userArray['apellidos'], $userArray['email'], $password, $userArray['estatura'], $userArray['peso'], $userArray['fechaNac'], $userArray['tipoCorredor'],
-                $userArray['medioFondo5km'], $userArray['medioFondo10km'], $userArray['medioFondoMediaMaraton'], $userArray['fondoMaraton'], $userArray['fondoMediaMaraton'],$userArray['trailCarreraMaxKm'],
+            $objUser = new Usuario($codUsuario, $userArray['nombre'], $userArray['apellidos'], $userArray['email'], $password, $userArray['estatura'], $userArray['peso'], $userArray['fechaNac'], $userArray['tipoCorredor'],
+                $userArray['medioFondo5km'], $userArray['medioFondo10km'], $userArray['medioFondoMediaMaraton'], $userArray['fondoMaraton'], $userArray['fondoMediaMaraton'], $userArray['trailCarreraMaxKm'],
                 $userArray['trailDistancia'], $userArray['trailDesnivel'], $userArray['sexo'], null);
         }
         return $objUser;
     }
 
+    /**
+     * Comprueba si un usuario existe en la aplicación.
+     *
+     * @author Pablo Mora Martín
+     *
+     * @param string $codUsuario Código de usuario
+     * @return null|Usuario Null / Usuario identificado
+     */
+    public static function comprobarUsuario($codUsuario)
+    {
+        $existe=true;
+        $userArray = UsuarioPDO::comprobarUsuario($codUsuario); //Array con la información del usuario
+        if (!$userArray) {//Si el array contiene algo, se crea el objeto
+            $existe=false;
+        }
+        return $existe;
+    }
 
     public static function insertarUsuario($parametros)
     {
-        return UsuarioPDO::insertarUsuario($parametros);
+        $objUser = null;
+        if (UsuarioPDO::insertarUsuario($parametros)) {
+            $objUser = self::validarUsuario($parametros['codUsuario'], $parametros['password']);
+        }
+        return $objUser;
     }
 
 
@@ -174,14 +195,14 @@ class Usuario
         return UsuarioPDO::modificarInformacion($codUsuario, $parametros);
     }
 
-    public function cargarTracks($parametros)
+    public function cargarTracks()
     {
-//        $this::__get($this->listaTracks) = Track::buscarTracks($parametros);
+        $_SESSION['usuario']->listaTracks = Track::buscarTracks();
     }
 
-    public function importarTrack($fichero)
+    public function importarTrack($fichero, $visibilidad,$nombre,$comentario)
     {
-        return TracksController::procesarTrack($fichero);
+        return TrackController::insertarTrack($fichero,$visibilidad,$nombre,$comentario);
     }
 
     public function borrarTrack($idTrack)

@@ -46,7 +46,24 @@ class UsuarioPDO
         }
         return $arrayUser;
     }
-
+    /**
+     * Busca un usuario en la base de datos.
+     *
+     * @author Pablo Mora Martín
+     *
+     * @param string $codUsuario Código del usuario
+     * @return bool Datos del usuario
+     */
+    public static function comprobarUsuario($codUsuario)
+    {
+        $existe = true;
+        $consultaUsuario = "select codUsuario from usuario where codUsuario=?";
+        $resultSet = DBPDO::ejecutarConsulta($consultaUsuario, [$codUsuario]);
+        if (!$resultSet->rowCount()) {
+            $existe=false;
+        }
+        return $existe;
+    }
     /**
      * Realiza el alta de un usuario nuevo.
      *
