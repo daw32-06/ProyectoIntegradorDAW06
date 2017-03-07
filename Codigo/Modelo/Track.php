@@ -1,55 +1,77 @@
 <?php
-require_once(realpath(dirname(__FILE__)) . '/Usuario.php');
+
+require_once(realpath(dirname(__FILE__)) . '/TrackPDO.php');
 require_once(realpath(dirname(__FILE__)) . '/Trackpoint.php');
 
 /**
- * Entrenamiento.
+ * Clase Track.
+ *
+ * Entrenamiento
  *
  * @author David González Gutiérrez
+ * @author David Fernández Flórez
+ * @author Pablo Mora Martín
+ * @version 1.0.0.0
+ *
+ * Fecha de última modificación: 03/03/2017
+ *
  */
 class Track
 {
     /**
-     * Identificación del entrenamiento
+     * Identificador del entrenamiento
+     * @var int
      */
     private $idTrack;
     /**
-     * Visibilidad del entrenamiento
+     * Visibilidad del entrenamiento: público o privado
+     * @var bool
      */
     private $visibilidad;
     /**
-     * Descripción/nombre del entrenamiento
+     * Nombre del entrenamiento
+     * @var string
      */
     private $nombre;
     /**
-     * Comentario sobre el entrenamiento
+     * Comentario sobre el entranemiento
+     * @var string
      */
     private $comentario;
-
-    /**
-     * Lista de Trackpoints
-     */
-    private $listaTrackpoint;
     /**
      * Fecha de importación del entrenamiento
+     * @var string
      */
     private $fechaImportacion;
     /**
-     * Fecha del entrenamiento
+     * Lista de trackpoints (puntos de ruta) del entrenamiento
+     * @var string
+     */
+    private $listaTrackpoint;
+    /**
+     * Fecha de inicio del entranamiento
+     * @var string
      */
     private $fechaInicio;
+    /**
+     * Ruta del fichero GPX
+     * @var string
+     */
+    private $rutaFichero;
 
     /**
-     * Track constructor.
-     * @param string $idTrack Identificación del entrenamiento
-     * @param bool $visibilidad Visibilidad del entrenamiento
-     * @param string $nombre Descripción/nombre del entrenamiento
-     * @param string $comentario Comentario sobre el entrenamiento
-     * @param Trackpoint $listaTrackpoint Lista de Trackpoints
-     * @param string $fechaImportacion Fecha de importación del entrenamiento
-     * @param string $fechaInicio Fecha del entrenamiento
+     * Constructor del Track
+     *
+     * @param int $idTrack Identificador del entrenamiento
+     * @param bool $visibilidad Visibilidad del entrenamiento: público o privado
+     * @param string $nombre Nombre del entrenamiento
+     * @param string $comentario Comentario sobre el entranemiento
+     * @param Trackpoint $listaTrackpoint Lista de trackpoints
+     * @param string $fechaImportacion Fecha de importación
+     * @param string $fechaInicio Fecha de inicio
+     * @param string $rutaFichero Ruta del fichero GPX
      */
-    public function __construct($idTrack, $visibilidad, $nombre, $comentario, $listaTrackpoint, $fechaImportacion, $fechaInicio)
+    public function __construct($idTrack, $visibilidad, $nombre, $comentario, $listaTrackpoint, $fechaImportacion, $fechaInicio, $rutaFichero)
     {
         $this->idTrack = $idTrack;
         $this->visibilidad = $visibilidad;
@@ -58,123 +80,132 @@ class Track
         $this->listaTrackpoint = $listaTrackpoint;
         $this->fechaImportacion = $fechaImportacion;
         $this->fechaInicio = $fechaInicio;
+        $this->rutaFichero = $rutaFichero;
     }
 
 
     /**
-     * @author David González Gutiérrez
-     * @return bool
-     */
-    public function insertarTrack()
-    {
-        $insertCorrecto = true;
-        // Not yet implemented
-        return $insertCorrecto;
-    }
-
-    /**
-     * @author David González Gutiérrez
-     * @param  int $idTrack
-     * @return bool
+     * Inserta un track (fichero GPX) en la aplicación
      *
+     * @author David González Gutiérrez
+     * @author David Fernández Flórez
+     * @since 1.0.0.0
+     *
+     * @param XMLReader $fichero XML
+     * @param bool $visibilidad Visibilidad del entrenamiento: público o privado
+     * @param string $nombre Nombre del entrenamiento
+     * @param string $comentario Comentario sobre el entrenamiento
      */
-    public function borrarTrack($idTrack)
+    public static function insertarTrack($fichero, $visibilidad, $nombre, $comentario)
     {
-        $borradoCorrecto = true;
-        // Not yet implemented
-        return $borradoCorrecto;
+        $salida = array();
+        $xml = new XMLReader();
+        $xml->open($fichero);
+        while ($xml->read()) {
+            if (($xml->name === 'metadata') && ($xml->nodeType == XMLReader::ELEMENT)) {
+                $nodoMetadata = new SimpleXMLElement($xml->readOuterXML());
+                if ($nodoMetadata != '') {
+                    $fechaInicio = strtotime($nodoMetadata->time);
+                }
+            }
+        }
+        $xml->close();
+
+        $idTrack = self::getTrackActual(); //Modificado por Pablo Mora
+        $idTrack++;
+        $track = new Track($idTrack, $visibilidad, $nombre, $comentario, null, date("Y/m/d"), $fechaInicio, $fichero);
+        TrackPDO::insertarTrack($track);
+        $trackpoints = array();
+        $xml = new XMLReader();
+        $xml->open($fichero);
+        while ($xml->read()) {
+            if (($xml->name === 'trkpt') && ($xml->nodeType == XMLReader::ELEMENT)) {
+                $nodo = new SimpleXMLElement($xml->readOuterXML());
+                if ($nodo != '') {
+                    $latlong = $nodo->attributes();
+                    $lat = $latlong[0];
+                    $long = $latlong[1];
+                    $time = strtotime($nodo->time);
+                    array_push($trackpoints, new Trackpoint(null, $idTrack, $lat, $long, $time, null, null, null, null, null));
+                }
+            }
+        }
+        Trackpoint::insertarTrackpoint($trackpoints);
     }
 
     /**
+     * Devuelve el identificador de track actual.
+     *
+     * Usado para que, al insertar un nuevo track, realizar el incremento del id del track.
+     * @see insertarTrack()
+     *
+     * @author Pablo Mora Martín
+     * @return int Identificador de track actual
+     */
+    public static function getTrackActual()
+    {
+        return TrackPDO::getTrackActual();
+    }
+
+    /**
+     * Borra un track.
+     *
      * @author David González Gutiérrez
-     * @access public
+     * @author David Fernández Flórez
+     * @since 1.0.0.0
+     *
+     * @param int $idTrack Identificador del track
+     * @return bool True: Borrado correcto. False: Borrado incorrecto
+     */
+    public static function borrarTrack($idTrack)
+    {
+        return TrackPDO::borrarTrack($idTrack);
+    }
+
+    /**
+     * Busca todos los enrenamiento de un usuario.
+     *
+     * @author David González Gutiérrez
+     * @author David Fernández Flórez
+     * @since 1.0.0.0
+     *
+     * @return array[Track] Tracks del usuario
      */
     public static function buscarTracks()
     {
-        // Not yet implemented
+        $tracks = array();
+        $tracksPDO = TrackPDO::recuperarTracks();
+        foreach ($tracksPDO as $index => $values) {
+            $objectTrack = new Track($values['idTrack'], $values['visibilidad'], $values['nombre'], $values['comentario'], null, $values['fechaImportacion'], $values['fechaInicio'], null);
+
+            array_push($tracks, $objectTrack);
+        }
+        return $tracks;
     }
 
     /**
+     * Dibujar ruta de un entrenamiento.
+     *
      * @author David González Gutiérrez
-     * @return bool
+     * @author David Fernández Flórez
+     * @since 1.0.0.0
+     *
+     * @param int $idTrack True: Borrado correcto. False: Borrado incorrecto
+     * @return array[Trackpoint] Trackpoints del entrenamiento
      */
-    public static function validarTrack()
+    public static function dibujarTrack($idTrack)
     {
-        $trackValido = true;
-        // Not yet implemented
-        return $trackValido;
-    }
-
-    /*
-     * @author David González Gutiérrez
-     * @return Trackpoint
-     */
-    private function insertarTrackpoint()
-    {
-        // Not yet implemented
+        return Trackpoint::buscarTrackpoints($idTrack);
     }
 
     /**
-     * @access public
-     * @return float
+     * Devuelve el valor de una propiedad pública especificada.
+     *
+     * @since 1.0.0.0
+     *
+     * @param string $property Atributo del cual se quiere recoger el valor
+     * @return mixed Valor del atributo
      */
-    public function getDistancia()
-    {
-        // Not yet implemented
-    }
-
-    /**
-     * @access public
-     * @return float
-     */
-    public function getAltitudMax()
-    {
-        // Not yet implemented
-    }
-
-    /**
-     * @access public
-     * @return float
-     */
-    public function getAltitudMin()
-    {
-        // Not yet implemented
-    }
-
-    /**
-     * @access public
-     * @return int
-     */
-    public function getPulsacionesMax()
-    {
-        // Not yet implemented
-    }
-
-    /**
-     * @access public
-     * @return int
-     */
-    public function getPulsacionesMin()
-    {
-        // Not yet implemented
-    }
-
-    /**
-     * @access public
-     */
-    public function resumirTrack()
-    {
-        // Not yet implemented
-    }
-
-    /**
-     * @access public
-     */
-    public function dibujarTrack()
-    {
-        // Not yet implemented
-    }
-
     public function __get($property)
     {
         if (property_exists($this, $property)) {
@@ -182,14 +213,20 @@ class Track
         }
     }
 
+    /**
+     * Establece el valor de una propiedad pública especificada.
+     *
+     * @since 1.0.0.0
+     *
+     * @param string $property Atributo del cual se quiere establecer el valor
+     * @param string $value Valor nuevo a establecer
+     */
     public function __set($property, $value)
     {
         if (property_exists($this, $property)) {
             $this->$property = $value;
         }
     }
-
-
 }
 
 ?>
