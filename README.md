@@ -1,1 +1,1 @@
-# Patricia Martínez Lucena
+# Proyecto Integrador
